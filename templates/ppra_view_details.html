@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tender Details</title>
+</head>
+<body>
+    <h1>Tender: {{ tender.title }}</h1>
+    <p>{{ tender.description }}</p>
+    <p>Status: {{ tender.status }}</p>
+
+    <h2>Bids</h2>
+    {% if tender.bids %}
+        <table border="1" cellpadding="8">
+            <tr>
+                <th>Bidder Name</th>
+                <th>Amount</th>
+                <th>File</th>
+                <th>Action</th>
+            </tr>
+            {% for bid in tender.bids %}
+            <tr>
+                <td>{{ bid.bidder_name }}</td>
+                <td>{{ bid.amount }}</td>
+                <td>
+                    {% if bid.file_path %}
+                        <a href="{{ url_for('static', filename=bid.file_path) }}" target="_blank">View File</a>
+                    {% else %}
+                        No File
+                    {% endif %}
+                </td>
+                <td>
+                    {% if tender.status != "PO Awarded" %}
+                        <form action="{{ url_for('award_po', bid_id=bid.id) }}" method="post">
+                            <button type="submit">Award PO</button>
+                        </form>
+                    {% else %}
+                        {% if tender.po_awarded == bid.id %}
+                            ✅ Awarded
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No bids yet.</p>
+    {% endif %}
+</body>
+</html>

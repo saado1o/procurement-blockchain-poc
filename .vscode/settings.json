@@ -1,0 +1,35 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "purchase",
+            "group": "purchase",
+            "database": "purchase",
+            "username": "root",
+            "askForPassword": true
+        }
+    ]
+}
+
+"python.analysis.extraPaths": [
+    "./",
+    "./venv/Lib/site-packages"
+]
+
+{
+  "python.analysis.extraPaths": ["./"]
+}
+
+{
+  "python.analysis.extraPaths": [
+    "./",
+    "./venv/Lib/site-packages"
+  ]
+}

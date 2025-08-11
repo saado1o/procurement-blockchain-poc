@@ -1,0 +1,6 @@
+| Username      | Email                                             | Password    | Role   |
+| ------------- | ------------------------------------------------- | ----------- | ------ |
+| admin	        | [admin@example.com](mailto:admin@example.com)     | Admin\@123  | admin  |
+| bidder\_1     | [bidder11@example.com](mailto:bidder1@example.com) | Bidder\@123 | bidder |
+| bidder\_2     | [bidder22@example.com](mailto:bidder2@example.com) | Bidder\@234 | bidder |
+| ppra\_officer1 | [ppra1@example.com](mailto:ppra@example.com)       | Ppra\@123   | ppra   |

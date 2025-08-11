@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}All Bids{% endblock %}
+{% block content %}
+<h2>All Bids</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Bidder</th>
+            <th>Email</th>
+            <th>Tender Title</th>
+            <th>Bid Amount (ETH)</th>
+            <th>Transaction Hash</th>
+            <th>Timestamp</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bid, user, tender in bids %}
+        <tr>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ tender.title }}</td>
+            <td>{{ "%.4f" | format(bid.bid_amount) }}</td>
+            <td>{{ bid.tx_hash }}</td>
+            <td>{{ bid.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

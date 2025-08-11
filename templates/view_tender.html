@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tender Details</title>
+</head>
+<body>
+    <h1>{{ tender.title }}</h1>
+
+    <p><strong>Description:</strong> {{ tender.description }}</p>
+    <p><strong>Smart Contract Address:</strong> {{ tender.contract_address }}</p>
+    <p><a href="{{ url_for('download_file', filename=tender.document) }}">Download Tender Document</a></p>
+
+    {% if current_user.is_authenticated %}
+        <form action="{{ url_for('bid', tender_id=tender.id) }}" method="POST">
+            <label for="amount">Bid Amount:</label>
+            <input type="number" name="amount" step="0.01" required>
+            <button type="submit">Submit Bid</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{{ url_for('login') }}">login</a> to submit a bid.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('index') }}">Back to Tenders</a></p>
+</body>
+</html>

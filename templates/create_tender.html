@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Create Tender{% endblock %}
+{% block content %}
+<h2>Create New Tender</h2>
+<form method="POST" action="{{ url_for('create_tender') }}" enctype="multipart/form-data">
+  {{ csrf_token() }}
+  <div class="mb-3">
+    <label for="title" class="form-label">Tender Title</label>
+    <input required type="text" id="title" name="title" class="form-control" />
+  </div>
+  <div class="mb-3">
+    <label for="description" class="form-label">Description</label>
+    <textarea required id="description" name="description" rows="4" class="form-control"></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="document" class="form-label">Upload Document (PDF)</label>
+    <input required type="file" accept="application/pdf" id="document" name="document" class="form-control" />
+  </div>
+  <button class="btn btn-success" type="submit">Create Tender</button>
+  <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

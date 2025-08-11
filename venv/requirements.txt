@@ -1,0 +1,6 @@
+flask
+flask-login
+flask-sqlalchemy
+web3
+py-solc-x
+pymysql

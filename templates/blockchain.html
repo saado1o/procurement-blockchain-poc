@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Blockchain Explorer{% endblock %}
+{% block content %}
+<h2>Latest Blockchain Activity</h2>
+{% for block in blocks %}
+    <div style="margin-bottom: 30px;">
+        <h3>Block #{{ block.number }}</h3>
+        <p><strong>Miner:</strong> {{ block.miner }}</p>
+        <p><strong>Timestamp:</strong> {{ block.timestamp }}</p>
+        <table>
+            <tr>
+                <th>Tx Hash</th><th>From</th><th>To</th><th>Value (ETH)</th>
+            </tr>
+            {% for tx in block.transactions %}
+            <tr>
+                <td>{{ tx.hash }}</td>
+                <td>{{ tx.from }}</td>
+                <td>{{ tx.to }}</td>
+                <td>{{ tx.value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endfor %}
+{% endblock %}

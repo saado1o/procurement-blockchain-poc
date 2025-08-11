@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PPRA Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>PPRA Dashboard</h1>
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Tender ID</th>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+        {% for tender in tenders %}
+        <tr>
+            <td>{{ tender.id }}</td>
+            <td>{{ tender.title }}</td>
+            <td>{{ tender.status }}</td>
+            <td>
+                <a href="{{ url_for('ppra_view_details', tender_id=tender.id) }}">View Details</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+

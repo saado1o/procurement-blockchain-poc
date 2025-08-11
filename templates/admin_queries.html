@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Admin: Procurement Queries{% endblock %}
+{% block content %}
+<h2>Procurement Queries</h2>
+
+{% if queries %}
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Tender</th>
+      <th>PPRA User</th>
+      <th>Message</th>
+      <th>Response</th>
+      <th>Timestamp</th>
+      <th>Respond</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for q in queries %}
+    <tr>
+      <td>{{ q.id }}</td>
+      <td>{{ q.tender.title }}</td>
+      <td>{{ q.user.username }}</td>
+      <td>{{ q.message }}</td>
+      <td>{{ q.response or 'No response yet' }}</td>
+      <td>{{ q.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+      <td>
+        <form method="POST" action="{{ url_for('admin_respond_query', query_id=q.id) }}">
+          {{ csrf_token() }}
+          <textarea name="response_message" rows="3" class="form-control" placeholder="Write response..." required></textarea>
+          <button type="submit" class="btn btn-primary btn-sm mt-1">Send</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No procurement queries found.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<h2>Available Tenders</h2>
+
+{% if current_user.role == 'admin' %}
+  <a href="{{ url_for('create_tender') }}" class="btn btn-success mb-3">Create New Tender</a>
+{% endif %}
+
+{% if tenders %}
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr><th>Title</th><th>Description</th><th>Status</th><th>Document</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    {% for tender in tenders %}
+    <tr>
+      <td>{{ tender.title }}</td>
+      <td>{{ tender.description }}</td>
+      <td>{{ tender.status|capitalize }}</td>
+      <td>
+        {% if tender.document %}
+          <a href="{{ url_for('download_file', filename=tender.document) }}" target="_blank">Download</a>
+        {% else %}
+          N/A
+        {% endif %}
+      </td>
+      <td>
+        <a href="{{ url_for('view_tender', tender_id=tender.id) }}" class="btn btn-primary btn-sm">View</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No tenders available.</p>
+{% endif %}
+{% endblock %}
+
+

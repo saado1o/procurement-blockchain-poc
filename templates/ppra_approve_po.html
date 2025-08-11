@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Award Purchase Order - {{ tender.title }}{% endblock %}
+{% block content %}
+<h2>PPRA Approval - Tender: {{ tender.title }}</h2>
+<p>{{ tender.description }}</p>
+
+<h4>Approved Bids</h4>
+{% if approved_bids %}
+<form method="POST" action="{{ url_for('ppra_award_po', tender_id=tender.id) }}">
+  {{ csrf_token() }}
+  <div class="mb-3">
+    <label for="po_bid_id" class="form-label">Select bid to award Purchase Order</label>
+    <select id="po_bid_id" name="po_bid_id" class="form-select" required>
+      {% for bid in approved_bids %}
+      <option value="{{ bid.id }}">{{ bid.user.username }} - {{ "%.2f"|format(bid.amount) }} ETH</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button class="btn btn-primary" type="submit">Award Purchase Order</button>
+</form>
+{% else %}
+<p>No approved bids available to award.</p>
+{% endif %}
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Home</a>
+{% endblock %}

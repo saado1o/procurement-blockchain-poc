@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Tender Details - {{ tender.title }}{% endblock %}
+
+{% block content %}
+<h2>{{ tender.title }}</h2>
+<p><strong>Description:</strong> {{ tender.description }}</p>
+<p><strong>Status:</strong> {{ tender.status|capitalize }}</p>
+<p><strong>Contract Address:</strong> {{ tender.contract_address or 'N/A' }}</p>
+<p><strong>Document:</strong> 
+  {% if tender.document %}
+    <a href="{{ url_for('download_file', filename=tender.document) }}" target="_blank">Download PDF</a>
+  {% else %}
+    None available
+  {% endif %}
+</p>
+
+{# Bid Submission Form: only visible if current user role is bidder and tender is active #}
+{% if current_user.role == 'bidder' and tender.status == 'active' %}
+<hr />
+<h4>Submit Your Bid</h4>
+<form method="POST" action="{{ url_for('bid', tender_id=tender.id) }}">
+  {{ csrf_token() }}
+  <div class="mb-3">
+    <label for="amount" class="form-label">Bid Amount (ETH)</label>
+    <input required type="number" step="0.01" min="0" class="form-control" id="amount" name="amount" placeholder="Enter your bid amount" />
+  </div>
+  <button type="submit" class="btn btn-primary">Submit Bid</button>
+</form>
+{% endif %}
+
+<hr />
+
+<h4>Bids</h4>
+{% if bids %}
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Bidder</th>
+      <th>Amount (ETH)</th>
+      <th>Status</th>
+      <th>Submitted At</th>
+      {% if current_user.role == 'admin' %}
+      <th>Actions</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for bid in bids %}
+    <tr>
+      <td>{{ bid.user.username }}</td>
+      <td>{{ "%.2f"|format(bid.amount) }}</td>
+      <td>
+        {% if bid.status == 'approved' %}
+          <span class="badge bg-success">Approved</span>
+        {% elif bid.status == 'rejected' %}
+          <span class="badge bg-danger">Rejected</span>
+        {% else %}
+          <span class="badge bg-secondary">Pending</span>
+        {% endif %}
+      </td>
+      <td>{{ bid.timestamp.strftime("%Y-%m-%d %H:%M") }}</td>
+      {% if current_user.role == 'admin' %}
+      <td>
+        {% if bid.status == 'pending' %}
+        <form style="display:inline" method="POST" action="{{ url_for('approve_bid', bid_id=bid.id) }}">
+          {{ csrf_token() }}
+          <button class="btn btn-success btn-sm" type="submit">Approve</button>
+        </form>
+        <form style="display:inline" method="POST" action="{{ url_for('reject_bid', bid_id=bid.id) }}">
+          {{ csrf_token() }}
+          <button class="btn btn-danger btn-sm" type="submit">Reject</button>
+        </form>
+        {% else %}
+          Processed
+        {% endif %}
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No bids yet.</p>
+{% endif %}
+
+<hr />
+
+{# PPRA Query form - visible only for PPRA users #}
+{% if current_user.is_authenticated and current_user.role == 'ppra' %}
+<h4>Send Query to Admin</h4>
+<form method="POST" action="{{ url_for('ppra_send_query', tender_id=tender.id) }}">
+  {{ csrf_token() }}
+  <div class="mb-3">
+    <label for="query_message" class="form-label">Your Query</label>
+    <textarea id="query_message" name="query_message" rows="4" required class="form-control" placeholder="Write your query here..."></textarea>
+  </div>
+  <button type="submit" class="btn btn-warning">Send Query</button>
+</form>
+
+{# List this PPRA user's previous queries and admin responses #}
+{% set ppra_queries = queries | selectattr("user_id", "equalto", current_user.id) | list %}
+{% if ppra_queries %}
+  <h5 class="mt-4">Your Previous Queries & Admin Responses</h5>
+  <ul class="list-group">
+    {% for q in ppra_queries %}
+    <li class="list-group-item">
+      <strong>Sent at:</strong> {{ q.timestamp.strftime("%Y-%m-%d %H:%M") }}<br />
+      <strong>Message:</strong> {{ q.message|e }}<br />
+      <strong>Admin Response:</strong> 
+      {% if q.response %}
+        {{ q.response|e }}
+      {% else %}
+        <em>No response yet.</em>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endif %}
+
+<a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Back to Tenders</a>
+{% endblock %}
